@@ -20,7 +20,6 @@ class HashTable:
     def _hash(self, key):
         '''
         Hash an arbitrary key and return an integer.
-
         You may replace the Python hash with DJB2 as a stretch goal.
         '''
         return hash(key)
@@ -29,7 +28,6 @@ class HashTable:
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
-
         OPTIONAL STRETCH: Research and implement DJB2
         '''
         pass
@@ -46,49 +44,64 @@ class HashTable:
     def insert(self, key, value):
         '''
         Store the value with the given key.
-
-        # Part 1: Hash collisions should be handled with an error warning. (Think about and
-        # investigate the impact this will have on the tests)
-
-        # Part 2: Change this so that hash collisions are handled with Linked List Chaining.
-
+        Hash collisions should be handled with Linked List Chaining.
         Fill this in.
         '''
-        pass
 
-
+        # print(int(self._hash_mod(key), 10))
+        pos = self._hash_mod(key)
+        head = self.storage[pos]
+        new_head = LinkedPair(key, value)
+        new_head.next = head
+        self.storage[pos] = new_head
 
     def remove(self, key):
         '''
         Remove the value stored with the given key.
-
         Print a warning if the key is not found.
-
         Fill this in.
         '''
-        pass
+        pos = self._hash_mod(key)
+        dummy_head = LinkedPair("dummy", "dummy")
+        head = dummy_head
+        dummy_head.next = self.storage[pos]
+
+        while head.next != None:
+            if head.next.key == key:
+                head.next = head.next.next
+                break
+            head = head.next
+        self.storage[pos] = dummy_head.next
 
 
     def retrieve(self, key):
         '''
         Retrieve the value stored with the given key.
-
         Returns None if the key is not found.
-
         Fill this in.
         '''
-        pass
-
+        pos = self._hash_mod(key)
+        head = self.storage[pos]
+        while head != None:
+            if head.key == key:
+                return head.value
+            head = head.next
 
     def resize(self):
         '''
         Doubles the capacity of the hash table and
         rehash all key/value pairs.
-
         Fill this in.
         '''
-        pass
-
+        prev_storage = self.storage
+        prev_capacity = self.capacity
+        self.capacity = prev_capacity * 2
+        self.storage = [None] * self.capacity
+        for i in range(prev_capacity):
+            head = prev_storage[i]
+            while head != None:
+                self.insert(head.key, head.value)
+                head = head.next
 
 
 if __name__ == "__main__":
